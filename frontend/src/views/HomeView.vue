@@ -1,7 +1,7 @@
 <template>
   <div class="bg-lust-400 p-8 rounded-[10px] border border-[#282828] mb-8">
     <h1 class="font-bold text-2xl md:text-3xl pb-6">
-      Say something nice to your <span class="text-purple-500">AI Girlfriend</span>
+      Say something nice to your <span class="text-purple-500">AI Girlfriend</span>!
     </h1>
     <p class="w-full md:max-w-[60%]">
       Press the record button to start talking. Then press stop to finish the recording.
@@ -14,24 +14,30 @@
       :is-recording="n === 1 ? isRecording1 : isRecording2"
     />
 
-    <div>
+    <div class="grid grid-cols-3 max-w-2xl items-center mt-8 gap-4">
       <button
-        class="py-3 px-8 hover:bg-purple-500 font-bold transition-shadow hover:no-underline hover:shadow-lg hover:shadow-purple-500/50 transition-colors ease-in-out duration-200 underline rounded-lg mt-8 inline-block"
-        @click="combineAndPlayAudios"
-      >
-        <span class="underline">Combine and Play</span>
-      </button>
-      <button
-        class="py-3 px-8 hover:bg-purple-500 font-bold transition-shadow hover:no-underline hover:shadow-lg hover:shadow-purple-500/50 transition-colors ease-in-out duration-200 underline rounded-lg mt-8 inline-block"
+        class="py-3 col-span-2 border hover:border-transparent px-8 hover:bg-white hover:text-black font-bold transition-shadow hover:shadow-lg hover:shadow-purple-500/50 transition-colors ease-in-out duration-200 rounded-lg inline-block"
         @click="sendAudioFiles"
       >
-        <span class="underline">Send!</span>
+        <span>Combine</span>
       </button>
-      <button
-        class="py-3 px-8 hover:bg-purple-500 font-bold transition-shadow hover:no-underline hover:shadow-lg hover:shadow-purple-500/50 transition-colors ease-in-out duration-200 underline rounded-lg mt-8 inline-block"
-        @click="playCombinedAudio"
-      >
-        <span class="underline">Play from back!</span>
+      <button @click="playCombinedAudio">
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="#FFF"
+            class="w-10 h-10 cursor-pointer hover:bg-white border rounded-full p-2 hover:fill-lust-500"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+            />
+          </svg>
+        </div>
       </button>
     </div>
   </div>

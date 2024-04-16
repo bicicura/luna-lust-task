@@ -4,18 +4,6 @@ import useRecorderStore from '@/stores/recorder/index.js'
 const useRecorder = () => {
   const store = useRecorderStore()
 
-  const audioContext = ref(null) // Initially, do not create the AudioContext
-
-  // Function to initialize AudioContext safely on user interaction
-  const initAudioContext = () => {
-    if (!audioContext.value) {
-      audioContext.value = new AudioContext()
-    }
-    if (audioContext.value.state === 'suspended') {
-      audioContext.value.resume() // Resume if it was suspended
-    }
-  }
-
   // Correct handling of isRecording to create a reactive computed property
   const isRecording1 = computed(() => store.getIsRecording1)
   const isRecording2 = computed(() => store.getIsRecording2)
@@ -25,22 +13,6 @@ const useRecorder = () => {
   const setAudioRef = (el) => {
     if (el) {
       audioPlayers.value.push(el)
-    }
-  }
-
-  const combineAndPlayAudios = async () => {
-    initAudioContext()
-
-    // Proceed with combining audios
-    if (audioContext.value) {
-      store.combinedAudio = await store.combineAudios(audioContext.value, [
-        store.audioUrl1,
-        store.audioUrl2
-      ])
-      const source = audioContext.value.createBufferSource()
-      source.buffer = store.combinedAudio
-      source.connect(audioContext.value.destination)
-      source.start()
     }
   }
 
@@ -110,8 +82,17 @@ const useRecorder = () => {
     }
   }
 
+  const playAudio = ({ recordingNumber }) => {
+    const url = recordingNumber === 1 ? store.audioUrl1 : store.audioUrl2
+    if (url) {
+      const audio = new Audio(url)
+      audio.play()
+    } else {
+      console.error('There is no audioUrl available in store.')
+    }
+  }
+
   return {
-    combineAndPlayAudios,
     handleStartRecording,
     handleStopRecording,
     playCombinedAudio,
@@ -119,6 +100,7 @@ const useRecorder = () => {
     isRecording1,
     isRecording2,
     setAudioRef,
+    playAudio,
     store
   }
 }
