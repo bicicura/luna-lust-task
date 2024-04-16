@@ -8,6 +8,7 @@ export default function () {
     audioChunks2: [],
     mediaRecorder2: null,
     audioUrl2: '',
-    combinedAudio: null
+    combinedAudio: null,
+    combinedAudioBlob: null
   }
 }

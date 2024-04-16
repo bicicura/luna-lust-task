@@ -21,6 +21,18 @@
       >
         <span class="underline">Combine and Play</span>
       </button>
+      <button
+        class="py-3 px-8 hover:bg-purple-500 font-bold transition-shadow hover:no-underline hover:shadow-lg hover:shadow-purple-500/50 transition-colors ease-in-out duration-200 underline rounded-lg mt-8 inline-block"
+        @click="sendAudioFiles"
+      >
+        <span class="underline">Send!</span>
+      </button>
+      <button
+        class="py-3 px-8 hover:bg-purple-500 font-bold transition-shadow hover:no-underline hover:shadow-lg hover:shadow-purple-500/50 transition-colors ease-in-out duration-200 underline rounded-lg mt-8 inline-block"
+        @click="playCombinedAudio"
+      >
+        <span class="underline">Play from back!</span>
+      </button>
     </div>
   </div>
 </template>
