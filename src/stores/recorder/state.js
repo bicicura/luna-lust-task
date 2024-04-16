@@ -3,11 +3,11 @@ export default function () {
     isRecording1: false,
     audioChunks1: [],
     mediaRecorder1: null,
-    audioUrl1: '',
+    audioUrl1: null,
     isRecording2: false,
     audioChunks2: [],
     mediaRecorder2: null,
-    audioUrl2: '',
+    audioUrl2: null,
     combinedAudio: null
   }
 }

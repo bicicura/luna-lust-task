@@ -1,10 +1,18 @@
-import { computed, ref, nextTick } from 'vue'
+import { computed, ref } from 'vue'
 import useRecorderStore from '@/stores/recorder/index.js'
 
 const useRecorder = () => {
   const store = useRecorderStore()
 
   const audioContext = ref(null) // Initially, do not create the AudioContext
+  const isLoading = ref(false)
+
+  const isRecording1 = computed(() => store.getIsRecording1)
+  const isRecording2 = computed(() => store.getIsRecording2)
+  const audioUrl1 = computed(() => store.getAudioUrl1)
+  const audioUrl2 = computed(() => store.getAudioUrl2)
+  const combinedAudio = computed(() => store.getCombinedAudio)
+  const handleCanCombineAudios = computed(() => !store.canCombineAudios)
 
   // Function to initialize AudioContext safely on user interaction
   const initAudioContext = () => {
@@ -16,35 +24,44 @@ const useRecorder = () => {
     }
   }
 
-  // Correct handling of isRecording to create a reactive computed property
-  const isRecording1 = computed(() => store.getIsRecording1)
-  const isRecording2 = computed(() => store.getIsRecording2)
-
-  const audioPlayers = ref([])
-
-  const setAudioRef = (el) => {
-    if (el) {
-      audioPlayers.value.push(el)
-    }
-  }
-
-  const combineAndPlayAudios = async () => {
+  // Función para combinar los audios
+  const combineAudios = async () => {
+    isLoading.value = true
     initAudioContext()
 
-    // Proceed with combining audios
+    // Verificar si hay un contexto de audio
     if (audioContext.value) {
+      // Combinar los audios y almacenar el resultado en el store
       store.combinedAudio = await store.combineAudios(audioContext.value, [
         store.audioUrl1,
         store.audioUrl2
       ])
-      const source = audioContext.value.createBufferSource()
-      source.buffer = store.combinedAudio
-      source.connect(audioContext.value.destination)
-      source.start()
+    }
+    // mock a payload just for demonstration
+    setTimeout(() => {
+      isLoading.value = false
+    }, 500)
+  }
+
+  // Función para reproducir el audio combinado
+  const playCombinedAudio = () => {
+    if (combinedAudio.value) {
+      // Iniciar el contexto de audio si no está inicializado
+      initAudioContext()
+
+      // Verificar si hay un contexto de audio
+      if (audioContext.value) {
+        // Crear un nodo de fuente de buffer y conectarlo al destino de audio
+        const source = audioContext.value.createBufferSource()
+        source.buffer = combinedAudio.value
+        source.connect(audioContext.value.destination)
+        source.start()
+      }
     }
   }
 
   const handleStartRecording = (n) => {
+    store.combinedAudio = null
     if (n === 1) {
       store.startRecording(1)
     } else {
@@ -55,24 +72,31 @@ const useRecorder = () => {
   const handleStopRecording = async (n) => {
     const audioUrl = await store.stopRecording(n)
     console.log('Recording stopped! URL:', audioUrl)
+  }
 
-    // Assuming n is 1 or 2, adjust for zero-based index
-    const audioIndex = n - 1
-    nextTick(() => {
-      if (audioPlayers.value[audioIndex]) {
-        audioPlayers.value[audioIndex].src = audioUrl
-        audioPlayers.value[audioIndex].load()
-      }
-    })
+  const playAudio = ({ recordingNumber }) => {
+    const url = recordingNumber === 1 ? audioUrl1.value : audioUrl2.value
+    if (url) {
+      const audio = new Audio(url)
+      audio.play()
+    } else {
+      console.error('There is no audioUrl available in store.')
+    }
   }
 
   return {
-    combineAndPlayAudios,
+    combinedAudio,
+    handleCanCombineAudios,
+    combineAudios,
+    playCombinedAudio,
     handleStartRecording,
     handleStopRecording,
     isRecording1,
     isRecording2,
-    setAudioRef,
+    isLoading,
+    playAudio,
+    audioUrl1,
+    audioUrl2,
     store
   }
 }

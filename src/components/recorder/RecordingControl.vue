@@ -1,5 +1,5 @@
 <template>
-  <div class="recording-control flex items-center gap-4 mt-8">
+  <div class="recording-control grid grid-cols-3 max-w-2xl items-center gap-4 mt-8">
     <button
       class="py-3 px-8 bg-purple-500 font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed rounded-lg inline-block"
       @click="() => handleStartRecording(recordingNumber)"
@@ -14,39 +14,39 @@
     >
       Stop Recording
     </button>
-    <audio ref="audioPlayer" controls></audio>
+
+    <PlayBtn @click="handlePlayAudio" :disabled="audioUrl === null" />
   </div>
 </template>
 
 <script>
-import { ref, defineComponent, nextTick } from 'vue'
+import { defineComponent } from 'vue'
 import useRecorder from '@/composables/useRecorder.js'
+import PlayBtn from '@/components/recorder/PlayBtn.vue'
 
 export default defineComponent({
   name: 'RecordingControl',
+  components: {
+    PlayBtn
+  },
   props: {
     recordingNumber: Number,
-    isRecording: Boolean
+    isRecording: Boolean,
+    audioUrl: [String, null]
   },
   setup(props) {
-    const { handleStartRecording, handleStopRecording } = useRecorder()
+    const { handleStartRecording, handleStopRecording, playAudio, store } = useRecorder()
 
-    const audioPlayer = ref(null)
+    const handlePlayAudio = () => playAudio({ recordingNumber: props.recordingNumber })
 
-    const stopRecording = async () => {
-      const audioUrl = await handleStopRecording(props.recordingNumber)
-      nextTick(() => {
-        if (audioPlayer.value && audioUrl) {
-          audioPlayer.value.src = audioUrl
-          audioPlayer.value.load() // Ensures the audio element loads the new source
-        }
-      })
-    }
+    const stopRecording = async () => await handleStopRecording(props.recordingNumber)
 
     return {
       handleStartRecording,
+      handlePlayAudio,
       stopRecording,
-      audioPlayer // Ensure this is exposed to the template
+      playAudio,
+      store
     }
   }
 })
