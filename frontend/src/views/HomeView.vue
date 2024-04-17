@@ -16,16 +16,16 @@
       :audioUrl="n === 1 ? audioUrl1 : audioUrl2"
     />
 
-    <div class="grid grid-cols-3 items-center mt-8 gap-4">
+    <div class="grid grid-cols-3 max-w-2xl items-center mt-8 gap-4">
       <button
-        :disabled="handleCanCombineAudios || combinedAudio !== null"
+        :disabled="isLoading || handleCanCombineAudios || combinedAudioBlob !== null"
         class="py-3 col-span-2 border flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:border-transparent px-8 hover:bg-white hover:text-black font-bold transition-shadow hover:shadow-lg hover:shadow-purple-500/50 transition-colors ease-in-out duration-200 rounded-lg inline-block"
-        @click="combineAudios"
+        @click="sendAudioFiles"
       >
         <AppSpinner v-if="isLoading" />
         <span>Combine</span>
       </button>
-      <PlayBtn @click="playCombinedAudio" :disabled="combinedAudio === null" />
+      <PlayBtn @click="playCombinedAudio" :disabled="combinedAudioBlob === null" />
     </div>
   </div>
 </template>
@@ -33,9 +33,9 @@
 <script>
 import { defineComponent } from 'vue'
 import useRecorder from '@/composables/useRecorder.js'
-import RecordingControl from '@/components/recorder/RecordingControl.vue' // Make sure the path is correct
-import AppSpinner from '@/components/AppSpinner.vue'
+import RecordingControl from '@/components/recorder/RecordingControl.vue'
 import PlayBtn from '@/components/recorder/PlayBtn.vue'
+import AppSpinner from '@/components/AppSpinner.vue'
 
 export default defineComponent({
   name: 'HomePage',

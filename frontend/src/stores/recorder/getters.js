@@ -14,10 +14,10 @@ export function getAudioUrl2(state) {
   return state.audioUrl2
 }
 
-export function canCombineAudios(state) {
-  return typeof state.audioUrl1 === 'string' && typeof state.audioUrl2 === 'string'
+export function getCombinedAudioBlob(state) {
+  return state.combinedAudioBlob
 }
 
-export function getCombinedAudio(state) {
-  return state.combinedAudio
+export function canCombineAudios(state) {
+  return typeof state.audioUrl1 === 'string' && typeof state.audioUrl2 === 'string'
 }
