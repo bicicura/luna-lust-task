@@ -1,35 +1,39 @@
-# luna-lust-task
+# Voice Message Processor
 
-This template should help get you started developing with Vue 3 in Vite.
+## Description
 
-## Recommended IDE Setup
+This Vue web app allows users to record two separate voice messages and outputs a combined audio message, where the second message plays after the first one ends.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Dependencies
 
-## Customize configuration
+- Vue
+- Pinia
+- TailwindCSS
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Installation
 
-## Project Setup
+#### Clone the repository:
 
-```sh
+```
+git clone https://github.com/bicicura/luna-lust-task.git
+```
+
+#### Navigate to the app directory:
+
+```
+cd luna-lust-task
+```
+
+#### Install dependencies:
+
+```
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+#### Boot app:
 
-```sh
+Start Vue.js app on port 5173.
+
+```
 npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
 ```
