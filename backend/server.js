@@ -15,9 +15,7 @@ const upload = multer({ storage: storage });
 
 app.post("/combine-audios", upload.array("audios", 2), (req, res) => {
   if (req.files.length !== 2) {
-    return res
-      .status(400)
-      .send("Se requieren exactamente dos archivos de audio.");
+    return res.status(400).send("There must be two audios exactly.");
   }
 
   const filePaths = req.files.map((file) => file.path);
@@ -29,7 +27,7 @@ app.post("/combine-audios", upload.array("audios", 2), (req, res) => {
     (error, combinedFileName, fileListPath) => {
       if (error) {
         console.error(`exec error: ${error}`);
-        return res.status(500).send("Error al combinar archivos de audio.");
+        return res.status(500).send("Error while combining audio files.");
       }
 
       res.sendFile(combinedFileName, (err) => {
