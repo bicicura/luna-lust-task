@@ -2,7 +2,7 @@
 
 ## Description
 
-This Vue.js web app allows users to record two separate voice messages and outputs a combined audio message, where the second message plays after the first one ends.
+This Vue + Express web app allows users to record two separate voice messages and outputs a combined audio message, where the second message plays after the first one ends.
 
 ## Dependencies
 
@@ -15,6 +15,8 @@ To verify that FFmpeg is installed and can be called from the command line, you 
 ```
 ffmpeg -version
 ```
+
+Other dependencies:
 
 - Express
 - Cors
@@ -64,10 +66,13 @@ cd ../frontend
 npm install
 ```
 
-# Boot frontend:
+#### Boot frontend:
 
 Start Vue.js app on port 5173.
 
 ```
 npm run dev
 ```
+
+> [!NOTE]
+> There is another branch which contains a frontend only solution, that uses native browser API to handle audio processing instead of FFMPEG.
