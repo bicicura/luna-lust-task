@@ -3,14 +3,14 @@
     <button
       class="py-3 px-8 bg-purple-500 font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed rounded-lg inline-block"
       @click="() => handleStartRecording(recordingNumber)"
-      :disabled="isRecording"
+      :disabled="isRecording || isOtherRecording"
     >
       Start Recording
     </button>
     <button
       class="py-3 px-8 bg-purple-500 font-bold disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg inline-block"
       @click="stopRecording"
-      :disabled="!isRecording"
+      :disabled="!isRecording || isOtherRecording"
     >
       Stop Recording
     </button>
@@ -30,6 +30,7 @@ export default defineComponent({
     PlayBtn
   },
   props: {
+    isOtherRecording: Boolean,
     recordingNumber: Number,
     isRecording: Boolean,
     audioUrl: [String, null]
