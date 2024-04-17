@@ -34,7 +34,6 @@ const useRecorder = () => {
       })
       // Almacena el blob combinado en el store
       store.combinedAudioBlob = combinedAudioBlob
-      console.log('Archivo combinado recibido')
     } catch (error) {
       // Manejar el error como consideres necesario
       console.error('Error al enviar archivos de audio:', error)

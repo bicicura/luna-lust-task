@@ -46,5 +46,5 @@ app.post("/combine-audios", upload.array("audios", 2), (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
+  console.log(`Server listening on http://localhost:${port}`);
 });

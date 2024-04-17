@@ -44,7 +44,6 @@ export default {
 
       return promise
     } else {
-      console.log('No MediaRecorder instance found.')
       return Promise.resolve(null)
     }
   },
