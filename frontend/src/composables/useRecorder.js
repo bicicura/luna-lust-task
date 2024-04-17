@@ -1,22 +1,21 @@
-import { computed, ref, nextTick } from 'vue'
+import { computed, ref } from 'vue'
 import useRecorderStore from '@/stores/recorder/index.js'
 
 const useRecorder = () => {
   const store = useRecorderStore()
 
-  // Correct handling of isRecording to create a reactive computed property
   const isRecording1 = computed(() => store.getIsRecording1)
   const isRecording2 = computed(() => store.getIsRecording2)
+  const audioUrl1 = computed(() => store.getAudioUrl1)
+  const audioUrl2 = computed(() => store.getAudioUrl2)
+  const combinedAudioBlob = computed(() => store.getCombinedAudioBlob)
+  const handleCanCombineAudios = computed(() => !store.canCombineAudios)
+  const isAnyRecordingActive = computed(() => store.getIsRecording1 || store.getIsRecording2)
 
-  const audioPlayers = ref([])
-
-  const setAudioRef = (el) => {
-    if (el) {
-      audioPlayers.value.push(el)
-    }
-  }
+  const isLoading = ref(false)
 
   const handleStartRecording = (n) => {
+    store.combinedAudioBlob = null
     if (n === 1) {
       store.startRecording(1)
     } else {
@@ -24,50 +23,23 @@ const useRecorder = () => {
     }
   }
 
-  const handleStopRecording = async (n) => {
-    const audioUrl = await store.stopRecording(n)
-    console.log('Recording stopped! URL:', audioUrl)
-
-    // Assuming n is 1 or 2, adjust for zero-based index
-    const audioIndex = n - 1
-    nextTick(() => {
-      if (audioPlayers.value[audioIndex]) {
-        audioPlayers.value[audioIndex].src = audioUrl
-        audioPlayers.value[audioIndex].load()
-      }
-    })
-  }
+  const handleStopRecording = async (n) => await store.stopRecording(n)
 
   const sendAudioFiles = async () => {
+    isLoading.value = true
     try {
-      // Primero obtén los blobs de las URLs almacenadas
-      const response1 = await fetch(store.audioUrl1)
-      const blob1 = await response1.blob() // Blob del primer audio
-
-      const response2 = await fetch(store.audioUrl2)
-      const blob2 = await response2.blob() // Blob del segundo audio
-
-      // Crea un objeto FormData
-      const formData = new FormData()
-      formData.append('audios', blob1, 'audio1.mp3') // Añade el primer archivo
-      formData.append('audios', blob2, 'audio2.mp3') // Añade el segundo archivo
-
-      // Hacer la solicitud POST con FormData
-      const response = await fetch('http://localhost:3000/combine-audios', {
-        method: 'POST',
-        body: formData // FormData se enviará con el tipo de contenido adecuado automáticamente
+      const combinedAudioBlob = await store.sendAudioFiles({
+        audioUrl1: store.audioUrl1,
+        audioUrl2: store.audioUrl2
       })
-
-      if (response.ok) {
-        const combinedAudioBlob = await response.blob() // Obtén el blob resultante
-        console.log('Archivo combinado recibido')
-        // Almacena el blob combinado en el store
-        store.combinedAudioBlob = combinedAudioBlob
-      } else {
-        throw new Error('La respuesta de la red no fue ok.')
-      }
+      // Almacena el blob combinado en el store
+      store.combinedAudioBlob = combinedAudioBlob
+      console.log('Archivo combinado recibido')
     } catch (error) {
-      console.error('Hubo un problema con la operación fetch:', error)
+      // Manejar el error como consideres necesario
+      console.error('Error al enviar archivos de audio:', error)
+    } finally {
+      isLoading.value = false
     }
   }
 
@@ -83,7 +55,7 @@ const useRecorder = () => {
   }
 
   const playAudio = ({ recordingNumber }) => {
-    const url = recordingNumber === 1 ? store.audioUrl1 : store.audioUrl2
+    const url = recordingNumber === 1 ? audioUrl1.value : audioUrl2.value
     if (url) {
       const audio = new Audio(url)
       audio.play()
@@ -93,13 +65,18 @@ const useRecorder = () => {
   }
 
   return {
+    handleCanCombineAudios,
     handleStartRecording,
+    isAnyRecordingActive,
     handleStopRecording,
     playCombinedAudio,
+    combinedAudioBlob,
     sendAudioFiles,
     isRecording1,
     isRecording2,
-    setAudioRef,
+    isLoading,
+    audioUrl1,
+    audioUrl2,
     playAudio,
     store
   }

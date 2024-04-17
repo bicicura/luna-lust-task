@@ -13,3 +13,11 @@ export function getAudioUrl1(state) {
 export function getAudioUrl2(state) {
   return state.audioUrl2
 }
+
+export function getCombinedAudioBlob(state) {
+  return state.combinedAudioBlob
+}
+
+export function canCombineAudios(state) {
+  return typeof state.audioUrl1 === 'string' && typeof state.audioUrl2 === 'string'
+}

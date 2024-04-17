@@ -29,7 +29,7 @@ export default {
   stopRecording(recorderNumber) {
     let keyPrefix = recorderNumber === 1 ? '1' : '2'
     if (this['mediaRecorder' + keyPrefix]) {
-      // Ensure onstop handler is set before calling stop.
+      // Ensure onstop handler is set before calling stop
       const promise = new Promise((resolve) => {
         this['mediaRecorder' + keyPrefix].onstop = () => {
           const audioBlob = new Blob(this['audioChunks' + keyPrefix], { type: 'audio/wav' })
@@ -46,6 +46,35 @@ export default {
     } else {
       console.log('No MediaRecorder instance found.')
       return Promise.resolve(null)
+    }
+  },
+
+  async sendAudioFiles({ audioUrl1, audioUrl2 }) {
+    try {
+      const response1 = await fetch(audioUrl1)
+      const blob1 = await response1.blob()
+
+      const response2 = await fetch(audioUrl2)
+      const blob2 = await response2.blob()
+
+      const formData = new FormData()
+      formData.append('audios', blob1, 'audio1.mp3')
+      formData.append('audios', blob2, 'audio2.mp3')
+
+      const response = await fetch('http://localhost:3000/combine-audios', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!response.ok) {
+        window.alert('There was an error, please try again!')
+        throw new Error('La respuesta de la red no fue ok.')
+      }
+
+      return await response.blob()
+    } catch (error) {
+      window.alert('There was an error, please try again!')
+      throw error // Rethrow the error to capture it in the composable
     }
   }
 }
